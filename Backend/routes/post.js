@@ -76,18 +76,32 @@ routes.put("/:id", multer({ storage: storage}).single('image') ,(req, res, next)
     .then((result) => {
       console.log(result);
       res.status(200).json({
-        message: "Update Successful"
+        message: "Update Successful",
+        imagePath: result.imagePath
       })
     })
 })
 
 routes.get("", (req, res, next) => {
-  Post.find()
+  let fetchedPosts;
+  const pageSize = +req.query.pageSize;
+  const currentPage = +req.query.page;
+  const postQuery = Post.find();
+  if(pageSize && currentPage){
+      postQuery
+        .skip(pageSize * (currentPage - 1))
+        .limit(pageSize);  
+  }
+  postQuery
     .then((document) => {
-
+        fetchedPosts = document;
+        return Post.count();
+    })
+    .then(count => {
       res.status(200).json({
         message: "Posts fetched successfully!",
-        posts: document
+        posts: fetchedPosts,
+        maxPosts: count
       });
     })
 
