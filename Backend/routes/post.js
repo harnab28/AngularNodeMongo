@@ -3,6 +3,7 @@ const multer = require('multer')
 
 const Post = require('../models/post');
 const checkAuth = require('../middlewarre/check-auth');
+const e = require("express");
 
 const routes = express.Router();
 const MIME_TYPE_MAP = {
@@ -33,8 +34,10 @@ routes.post("", checkAuth ,multer({ storage: storage }).single("image"), (req, r
   const post = Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + '/images/' + req.file.filename
+    imagePath: url + '/images/' + req.file.filename,
+    creator: req.userData.userId
   });
+  
   post.save().then((createdPOst) => {
       res.status(201).json({
         message: 'Post added successfully',
@@ -71,15 +74,25 @@ routes.put("/:id",checkAuth, multer({ storage: storage}).single('image') ,(req, 
   const post = {
     _id: req.body.id,
     title: req.body.title,
-    content: req.body.content
+    imagePath: imagePath,
+    content: req.body.content,
+    creator: req.userData.userId
   }
-  Post.updateOne({ _id: req.params.id }, post)
+  Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post)
     .then((result) => {
-      console.log(result);
-      res.status(200).json({
-        message: "Update Successful",
-        imagePath: result.imagePath
-      })
+      if(result.nModified > 0){
+        res.status(200).json({
+          message: "Update Successful",
+          imagePath: result.imagePath
+        });
+      }
+      else{
+        res.status(401).json({
+          message: "Unauthorised",
+          imagePath: result.imagePath
+        });
+      }
+
     })
 })
 
@@ -111,12 +124,21 @@ routes.get("", (req, res, next) => {
 routes.delete("/:id", checkAuth, (req, res, next) => {
   //console.log(req.params.id);
   Post.deleteOne({
-    _id: req.params.id
+    _id: req.params.id,
+    creator: req.userData.userId
   })
-    .then(() => {
-      res.status(200).json({
-        message: 'deletion Successful',
-      });
+    .then((result) => {
+      if(result.n > 0){
+        res.status(200).json({
+          message: 'deletion Successful',
+        });
+      }
+      else{
+        res.status(401).json({
+          message: 'Not Authorised',
+        });
+      }
+
     })
 
 })

@@ -16,7 +16,8 @@ router.post('/signup', (req, res, next) => {
                 .then( result => {
                     res.status(201).json({
                         message: 'User Created',
-                        result: result
+                        result: result,
+                        userId: fetechedUser.userId
                     });
                 })
                 .catch(err => {
@@ -53,7 +54,8 @@ router.post("/login", (req, res, next) => {
                                         );
                     res.status(200).json({
                         token: token,
-                        expiresIn: 3600
+                        expiresIn: 3600,
+                        userId: fetechedUser._id
                     });
 
                 })
