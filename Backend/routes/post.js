@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require('multer')
 
 const Post = require('../models/post');
+const checkAuth = require('../middlewarre/check-auth');
 
 const routes = express.Router();
 const MIME_TYPE_MAP = {
@@ -26,7 +27,7 @@ const storage = multer.diskStorage({
   }
 })
 
-routes.post("", multer({ storage: storage }).single("image"), (req, res, next) => {
+routes.post("", checkAuth ,multer({ storage: storage }).single("image"), (req, res, next) => {
   const url = req.protocol + '://' + req.get('host');
 
   const post = Post({
@@ -61,7 +62,7 @@ routes.get("/:id", (req, res, next) => {
     })
 })
 
-routes.put("/:id", multer({ storage: storage}).single('image') ,(req, res, next) => {
+routes.put("/:id",checkAuth, multer({ storage: storage}).single('image') ,(req, res, next) => {
   let imagePath = req.body.imagePath;
   if(req.file){
     const url = req.protocol +  "://" + req.get('host');
@@ -107,7 +108,7 @@ routes.get("", (req, res, next) => {
 
 });
 
-routes.delete("/:id", (req, res, next) => {
+routes.delete("/:id", checkAuth, (req, res, next) => {
   //console.log(req.params.id);
   Post.deleteOne({
     _id: req.params.id
