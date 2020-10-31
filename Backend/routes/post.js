@@ -47,6 +47,11 @@ routes.post("", checkAuth ,multer({ storage: storage }).single("image"), (req, r
         }
 
       });
+    })
+    .catch( error =>{
+      res.status(500).json({
+        message: 'Creating Post Failed'
+      });
     });
 
 });
@@ -63,6 +68,11 @@ routes.get("/:id", (req, res, next) => {
       }
 
     })
+    .catch(error => {
+      res.json(500).json({
+        message: 'Cannot Retrieve Posts'
+      });
+    });
 })
 
 routes.put("/:id",checkAuth, multer({ storage: storage}).single('image') ,(req, res, next) => {
@@ -94,6 +104,11 @@ routes.put("/:id",checkAuth, multer({ storage: storage}).single('image') ,(req, 
       }
 
     })
+    .catch(error => {
+      res.status(500).json({
+        message: 'Unable to Update the post'
+      });
+    });
 })
 
 routes.get("", (req, res, next) => {
@@ -118,6 +133,11 @@ routes.get("", (req, res, next) => {
         maxPosts: count
       });
     })
+    .catch(error => {
+      res.status(500).json({
+        message: 'Unable to Fetch the Posts'
+      });
+    });
 
 });
 
@@ -139,6 +159,11 @@ routes.delete("/:id", checkAuth, (req, res, next) => {
         });
       }
 
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: 'Deletion Failed due to some unknown reason'
+      });
     })
 
 })

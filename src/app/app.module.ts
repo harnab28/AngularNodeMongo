@@ -13,13 +13,16 @@ import { MatExpansionModule} from '@angular/material/expansion'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 import { MatPaginatorModule } from '@angular/material/paginator'
+import { MatDialogModule } from '@angular/material/dialog'
  
+import { ErrorInterceptor } from './error-interceptor'
 import { AuthInterceptor } from './auth/auth-interceptor'
 import { LoginComponent } from './auth/login/login.component'
 import { SignupComponent } from './auth/signup/signup.component'
 import { PostCreateComponent } from './posts/post-create/post-create.components'
 import { PostListComponent } from './posts/post-list/post-list.component'
 import { HeaderComponent } from './header/header.component'
+import { ErrorComponent } from './error/error.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +30,8 @@ import { HeaderComponent } from './header/header.component'
     PostListComponent,
     HeaderComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -42,11 +46,16 @@ import { HeaderComponent } from './header/header.component'
     HttpClientModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor , multi: true}
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    ErrorComponent
+  ]
 })
 export class AppModule { }

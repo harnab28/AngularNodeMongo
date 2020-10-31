@@ -14,15 +14,16 @@ router.post('/signup', (req, res, next) => {
             });
             user.save()
                 .then( result => {
+                    console.log(result);
                     res.status(201).json({
                         message: 'User Created',
-                        result: result,
-                        userId: fetechedUser.userId
+                        result: result
                     });
                 })
                 .catch(err => {
                     res.status(500).json({
-                        error: err
+                        error: err,
+                        message: 'User cannot be Created'
                     });
                 })
         });
@@ -36,7 +37,7 @@ router.post("/login", (req, res, next) => {
         .then( user => {
             if(!user){
                 return res.status(401).json({
-                    message: "Auth Failed"
+                    message: "User Doesnot Exist"
                 });
             }
             fetechedUser = user;
@@ -44,7 +45,7 @@ router.post("/login", (req, res, next) => {
                 .then(result => {
                     if(!result){
                         return res.status(401).json({
-                            message: "Auth Failed"
+                            message: "Incorrect Username or Password"
                         });
                     }
                     const token = jwt.sign(
@@ -61,7 +62,7 @@ router.post("/login", (req, res, next) => {
                 })
                 .catch( err => {
                     return res.status(401).json({
-                        message: 'Auth failed'
+                        message: 'Login Failed'
                     });
                 });
         });
