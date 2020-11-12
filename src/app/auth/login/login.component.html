@@ -1,17 +1,20 @@
 <mat-card>
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <form (submit)="onLogin(loginForm)" #loginForm="ngForm">
-      <mat-form-field>
-        <input type="email" matInput name="email" ngModel placeholder="Email" #emailInput="ngModel" required email>
-        <mat-error *ngIf="emailInput.invalid">Enter a Valid Email</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input type="password" name="password" ngModel matInput placeholder="Password" #passwordInput="ngModel" required>
-        <mat-error *ngIf="passwordInput.invalid">Enter a Valid Password</mat-error>
-      </mat-form-field>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onLogin(loginForm)" #loginForm="ngForm">
+    <mat-form-field>
+      <input type="email" matInput name="email" ngModel placeholder="Email" #emailInput="ngModel" required email>
+      <mat-error *ngIf="emailInput.invalid">Enter a Valid Email</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="password" name="password" ngModel matInput placeholder="Password" #passwordInput="ngModel" required>
+      <mat-error *ngIf="passwordInput.invalid">Enter a Valid Password</mat-error>
+    </mat-form-field>
 
-      <button mat-raised-button color="accent" type="submit" *ngIf="!isLoading">Login</button>
+    <re-captcha (resolved)="resolved($event)" siteKey="6LdXQOIZAAAAAAiCc3eGA-DkNyf9j9OjvpG7IzT0" name="captcha" ngModel
+      #captchaControl="ngModel" required>
+    </re-captcha>
+    <button mat-raised-button color="accent" type="submit" [disabled]="!captchaControl.valid"
+      *ngIf="!isLoading">Login</button>
 
-    </form>
+  </form>
 </mat-card>
-  
